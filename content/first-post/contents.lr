@@ -1,0 +1,34 @@
+title: A new home!
+---
+pub_date: 2019-03-26
+---
+body:
+
+I have a new online home!
+
+Leticia Portella showed me [her blog](https://leportella.com) at the Jupyter team meeting last week
+and [inspired me](https://leportella.com/english/2019/02/22/my-experience-with-blogs-and-texts.html)
+to start blogging again.
+
+And not on Medium!!!
+
+I haven't bothered to move over all my posts from [my Medium account](https://medium.com/@saulshanabrook),
+but I might at some point. It does feel good to gain back some control, so I can choose how to frame myself.
+
+The disadvantage is the same, more choice... But it feels worth it, so that I am more invested in this place
+and can play with it as I like.
+
+----
+Luckily, we were already talking about having a blog at Quansight and someone brought up using [lektor](https://www.getlektor.com) to manage it.
+
+I tried it out and really like it!
+
+I can easily edit the file, or edit via a web GUI.
+
+Thank you open source world for this wonderful tool :)
+
+![](screen-shot-2019-03-26-at-3.59.22-pm.png)
+
+
+---
+_template: blog-post.html
