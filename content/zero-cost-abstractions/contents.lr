@@ -1,0 +1,35 @@
+title: Zero Cost Abstractions
+---
+body:
+
+From [a gitter conversation about Pikelet](https://web.archive.org/web/20190328151742/https://gitter.im/pikelet-lang/Lobby?at=5c9c33d8b6711251983ca930)
+
+>> A trait system with monomorphization as a compilation strategy should definitely be doable (with limited novel research, I hope) for Pikelet.
+> 
+> Are there languages that do this, to look at for examples?
+
+> Rust currently does this.
+
+> I found https://web.archive.org/web/20081012113943/http://www.eecs.harvard.edu/~greg/cs256sp2005/lec15.txt
+an interesting overview of some monomorphization techniques (esp. for higher rank polymorphism & existential quantification)
+
+> Lately, I’ve been thinking that “zero-cost abstraction” suggests “indirections that the compiler can see through”—semantic or syntactic factoring/encapsulation/wrapping/&c. that doesn’t make the generated code any worse than what you would’ve written by hand
+
+> At a low level, syntactic “lifting” of things is a good example of something people generally agree falls into this category—e.g. a string literal in C compiling to an array in the read-only data segment, or local variables compiling to automatically allocated registers, or a lambda in C++ compiling to an unboxed record and function
+
+
+----
+Notes from the archive.org link:
+
+The metadsl project is a System F implementation deeply embedded in Python. But what are we using for type checking? We are using Python's typing!! What? That doesn't make sense! I know! I haven't seen this at all as even something that is a real thing. But the point is, we are piggy backing on MyPy to do our static analysis. And we aren't doing any type checking at runtime. The structure is more like this:
+
+1. Define how expression can compose
+2. Use Python's type system to provide static type annotations for functions on expressions, to limit in what contexts they can be called
+3. ... In another place define different semantics for different use cases. For example, we can create a graph of the expressions or "evaluate" them by defining pattern replacements.
+
+From what I can gather, the system is some form System F-ω. Inside of it, we embed (can) embed a simply typed lambda calculus. 
+
+
+---
+pub_date: 2019-03-28
+---

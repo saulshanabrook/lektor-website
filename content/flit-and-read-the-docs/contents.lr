@@ -1,0 +1,71 @@
+title: Flit & Read the Docs
+---
+body:
+
+This post is about the happy partnership between two wonderful technologies [Flit](https://flit.readthedocs.io/en/latest/), which gives you an alternative to writing a `setup.py` for your Python package, and [Read the Docs](https://readthedocs.org/) which allows you to host your Sphinx documentation for free!
+
+TLDR is put this in your `readthedocs.yml`:
+
+```yaml
+version: 2
+
+python:
+  version: 3.7
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - doc
+        - test
+```
+
+And then your wonderful `pyproject.toml` you created with `flit` will be used to install your Python package and your dependencies before building the docs on RTD. It will install the `doc` and `test` requirements in your `tool.flit.metadata.requires-extra` as well as your default requires.
+
+This is all set up and working on the [`metadsl`]https://github.com/Quansight-Labs/metadsl) project if you are looking for an example. The `pyproject.toml` looks like this, at the current moment:
+
+```toml
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "metadsl"
+author = "Saul Shanabrook"
+author-email = "s.shanabrook@gmail.com"
+home-page = "https://github.com/Quansight-Labs/metadsl"
+requires = [
+    "typing_extensions"
+]
+requires-python = ">=3.7"
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+[tool.flit.metadata.requires-extra]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-mypy",
+    "mypy"
+]
+doc = [
+    "sphinx",
+    "sphinx-autodoc-typehints"
+]
+dev = [
+    "jupyterlab"
+]
+```
+
+----
+
+The  slightly longer explanation is that, by default, RTD won't pick up on the `pyproject.toml` file like it would the `setup.py`. But, luckily  the version of `pip` does support these files now, so we just have to tell RTD to do a manual pip install.
+
+It's also pretty slick how `pip` passes the extra requirements to the build system, which in this case is `flit`, and `flit` know how that maps to the `requires-extra` you provided. 
+---
+pub_date: 2019-03-29
+---

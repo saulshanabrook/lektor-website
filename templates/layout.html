@@ -1,7 +1,25 @@
 <!doctype html>
-<meta charset="utf-8">
-<link rel="stylesheet" href="{{ '/static/style.css'|url }}">
-<title>{% block title %}Saul Shanabrook{% endblock %}</title>
+<html >
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Saul Shanabrook">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Saul Shanabrook{% endblock %}</title>
+
+  <link rel="stylesheet" href="{{ '/static/style.css'|url }}">
+  <link rel="stylesheet" href="{{ get_pygments_stylesheet()|url }}">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-44398348-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-44398348-1');
+  </script>
+
+</head>
+
 <body>
   <header>
     <h1>Saul Shanabrook</h1>
@@ -20,3 +38,5 @@
     {% block body %}{% endblock %}
   </div>
 </body>
+
+</html>
