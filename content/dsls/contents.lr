@@ -1,0 +1,28 @@
+title: Notes on "Squid: Type-Safe, Hygienic, and Reusable Quasiquotes"
+---
+body:
+
+https://infoscience.epfl.ch/record/231700/files/scala17main-scala17main16-p-bdc7425-34084-final.pdf
+
+
+This is why we need typed DSL in Python:
+
+
+> Manipulating such an IR is error-prone, as it is easy to con- struct nonsensical terms such as App(Const(1),Const(2)).
+
+
+How to get quasiquotes in Python? 
+* Custom string prefixes in Python, like quasiquotes: https://mail.python.org/pipermail/python-ideas/2013-May/020919.html
+* Or make your own encoder? https://stackoverflow.com/a/37204095
+
+Thoughts:
+
+* Maybe just make the repper forms of real Python functions? i.e. `Rep[typing.Callable[...]]` instead of `Abstraction[...]]`
+
+But the issue is you also need to store the types at runtime and the regular types aren't good at this... 
+
+* "Lift" function of `Rep[T] -> Rep[V]` to `Rep[T -> V]`
+
+
+
+
