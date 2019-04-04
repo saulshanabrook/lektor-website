@@ -1,8 +1,13 @@
-title: λω
+title: λω for Metadsl
 ---
 body:
 
+I think that [metadsl](https://github.com/Quansight-Labs/metadsl) is a λω / System F-ω language.
+
 Should we represent the type system outside of the Python representation?
+
+
+Probably, at the moment, no. Let's just represent it implicitly using Python's type signatures. 
 
 http://okmij.org/ftp/tagless-final/
 ---
