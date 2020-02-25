@@ -1,0 +1,177 @@
+title: C4ML
+---
+body:
+
+notes:
+
+Three steps:
+1. Write computation
+2. Determine what to evaluate (build evaluation unit if needed)
+3. Evaluate
+4. Wait for results
+
+In NumPy, each are done after every function call. For example in `np.arange(10)[0]`:
+
+1. np.arange(10) is written
+2. We want to evaluate `arange` function with `10` arange
+3. We evaluate
+4. We return result to user
+
+Then the process happens again for `__getitem__`.
+
+
+Let's compare this to Jax by default
+
+1. `np.arange(10)` is written
+2. We build up an XLA graph for this expression
+3. We start evaluating this XLA graph
+4. Don't block on result until user actually needs it
+
+Same is done for `__getitem__`, starting step 1. on it doesn't require
+waiting for the results to be computed.
+
+So what do we mean by "needs it"? Well there are a number of methods in Python
+(just Python itself, not through the C API, if you are in C land you can mess with things)
+that are not able to be monkey typed. I.e. the type that is returned must be a real Python
+value not some object that has the same interface as it. This list includes:
+
+    * str(x)
+    * repr(x)
+    * type(x)
+    * iter(x) (for loop) #TODO: look up right one here, is it iter or `__iter__` or `__next__`?
+    * bool(x) (if, while)
+    * ipykernel dunder methods for displaying in Jupyter
+    
+For most of these, we get the option to prepare the proper value for Python. So in Jax, we don't
+block on finishing the computation until one of these is triggerd #TODO: This is what I assume
+I could be wrong here.
+
+
+It also gives you the ability to stop at step 1 between each fcuntion call, and lets you move
+step 2 to the decoration of a function. For example:
+
+```python
+jit(lambda: np.arange(10)[0])()
+```
+
+This build up an XLA expression for both `arange` and `__getitem__` together, before executing. 
+
+Numba takes a similar approach, but doesn't support the eager default mode that Jax does. However, it
+does bytecode analysis of the function, instead of using tracing, so it can support more control flow.
+
+The implicit question here is this:
+
+> I want to use a NumPy API. I would like to be able to choose my compilation and execution envronment
+seperately from describing my problem. Sometimes I want to iterate, sometimes I want to precompile. Can we build a framework to let users achieve this loose coupling?
+
+
+I could see a global Python flag or context manager for this:
+
+1. Evluate eager
+2. Evaluate on __str__ etc method
+3. Evaluate only explicitly and error on those methods if we have not evaluated
+
+
+And another flag for what tool we use to evaluate. 
+
+So let's say you are a library like matplotlib. You need to users to pass you some "data" object that maybe behave like numpy arrays or pandas dataframes. Or maybe you just need some specific subset of those APIs, not neccesarily compatibility with every single method and corner case.
+
+Matplotlib should be able to specify statically what is the interface/type of object they require. They should also be explcit internally when the want to evaluate. Why not just default to option number `2` above? Because we can getter performance if we batch multiple expression together. For example, let's say in matplotlib someone passes in a Parquet file. In one part they load column *x* and compute the sum, in another they load column *x* and compute the mean. If instead they said "Hey go execute these two expression and return me the result" the expresssions could be responsible for batching those things together and doing less work. 
+
+So how can we do this in a way that doesn't tie matplotlib to any particular computation backend?
+
+What about this interface:
+
+```python
+class Lazy(typing.Generic[T]):
+    def __execute__(self) -> T:
+        ...
+
+    def __str__(self):
+        return str(self.execute())
+```
+
+
+Isn't this a lot like an awaitable object?
+
+
+TODO: Can we refer to self in generic type? Like:
+
+```python
+class Hi(List[Hi]):
+    ...
+```
+
+Naw, what about convert to?
+
+```python
+class Convertable:
+    def __asinstance__(self, tp: typing.Type[T]) -> T:
+        ...
+```
+
+```python
+asinstance(jax.arange(10), np.ndarray)
+asinstance(jax.arange(10)[0], int)
+```
+
+```python
+class Expression(Convertable):
+    def __asinstance__(self, tp: typing.Type[T]) -> T:
+        return Converter[tp].convert(self)
+
+```
+
+This would help matplotlib case, if you want two do tuple:
+
+```python
+asinstance(Pair.create(x['hi'].mean(), x['hi'].sum()), typing.Tuple[int, int])
+```
+
+Could use for ipykernel conversions...
+
+
+```python
+SVG = NewType("SVG", str)
+JSON = NewType("JSON", typing.Any)
+
+MIMEType = Union[
+    Tuple[Constant["SVG"], SVG],
+    Tuple[Constant["str"], str],
+    Tuple[Constant["json"], JSON],
+]
+
+asinstance("hi", MIMEType)
+# union runs `asinstance` on each option, choosing first.
+```
+
+
+
+
+----
+
+Can we have an IR format that lets us represent Python properly and translate to any other?
+
+What do we need from a meta-ir? what do we need to share? what are the different layers?
+
+metadsl is one plateu we could shoehorn in to solve all these problems, but is it better to have some layers about it at the language level and then have it plug in? Sort of like the numpy api extending conversations? That work for any backend not just metadsl?
+
+Then once you have that, it can be like "use metadsl to get a head start?" 
+
+
+<!-- Need conversion mechanism as well so you can pass in other objects that  -->
+<!-- So 
+
+* When do we
+* when do we block on result?
+
+* When to start evaluating evaluate
+    * on explicit call (.execute, )
+    * on exit function (__bool__, etc)
+    * every function call (eager mode)
+    * on function definition (@jit)
+
+* -->
+
+---
+pub_date: 2020-02-25

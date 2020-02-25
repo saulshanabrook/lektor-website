@@ -1,0 +1,25 @@
+title: Lightning talk full of binders?
+---
+body:
+
+
+## [JupyterLab Data Explorer](https://github.com/jupyterlab/jupyterlab-data-explorer)
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyterlab/jupyterlab-data-explorer/a4ae231f6e1c52b5aee1dd7fad4985722d863456?urlpath=lab/tree/notebooks/Table.ipynb)
+
+
+## [JupyterLab Metadata Service](https://github.com/jupyterlab/jupyterlab-metadata-service/pull/27/)
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyterlab/jupyterlab-metadata-service/040abc843fa4a04b810c9bbc37671ab0cacbcb2d?urlpath=lab)
+
+## [`jupyterlab-omnisci`](https://github.com/Quansight/jupyterlab-omnisci/pull/55)
+
+[![binder logo](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Quansight/jupyterlab-omnisci/29f4d767dd7256c060475bdd4492b4b8effd709a?urlpath=lab/tree/notebooks/4.%20Extract%20Use%20Cases%20-%20VL%20examples.ipynb)
+
+## [`metadsl`](https://github.com/quansight-labs/metadsl)
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Quansight-Labs/metadsl/f7597bf12319a0e0065eb8ab87cbae79dae29a49?urlpath=lab/tree/Demo.ipynb)
+
+
+---
+pub_date: 2019-07-25

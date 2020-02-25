@@ -1,0 +1,27 @@
+title:
+
+Fish Auto Activate Conda 
+---
+body:
+
+Today I finally grew tired of running `activate jupyterlab-data-explorer` ad nauseum, so I set up my [fish shell](https://fishshell.com/) to auto activate a conda environment, whenever you change directories, based on the name of the folder:
+
+```
+function __auto-conda --on-variable PWD --description 'Auto activate conda env based on directory name'
+  status --is-command-substitution; and return
+  set __env_name (basename $PWD)
+  if test \( -d "/usr/local/miniconda3/envs/$__env_name" \) -a \( __env_name != "$CONDA_DEFAULT_ENV" \)
+    conda activate "$__env_name"
+  end
+end
+
+# run on startup as well
+__auto-conda
+```
+
+It amazes me how long I have put up with this inconvenience!  
+
+This dovetails nicely with
+ [my last post on displaying your conda environment in the iTerm status bar](https://www.saulshanabrook.com/conda-environment-in-iterm2-status-bar/).
+---
+pub_date: 2019-08-20

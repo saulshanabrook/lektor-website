@@ -1,0 +1,15 @@
+title: Expression Systems and Coroutines in Python
+---
+body:
+
+For months I have been troubled by a hunch that lazy expression systems (Dask Array, Tensorflow, metadsl) should use some of the coroutine machinery in Python. The annoying part about these systems is the need to run `execute` at some point before you can actually see your results. Often, you also need to give some context for execution. In Tensorflow this might be the Session, in `metadsl` this is the replacement rules you have active.
+
+If we squint our eyes a bit, this looks like the [`async`/`await` syntax](https://docs.python.org/3/library/asyncio-task.html#coroutines). How so? Well you end up with things that are like futures, in  that the represent a thing that will be computed but maybe is not yet. They also both have the notion of some context to run the object with, with coroutines this is the event loop. 
+
+The main difference is that we compose coroutines inside `async` functions, which let us go back and forth between regular function calls and the `await` calls. What we do in something like Tensorflow, however, is more like a library that lets you manipulate Futures directly, by saying things like "When this finishes, the chain it with this other thing" so that we end up with one big future in the end, that we can call to do all of our work.
+
+We don't have Python control flow inside of this graph, because we don't end up executing it with the Python interpreter. So then Google has to end up creating things like autograph/[Snek-LMS](https://github.com/jmd1011/snek-LMS#lightweight-syntax-for-building-computation-graphs) to convert Python control flow into another runtime. 
+
+So I guess if we want this kind of support first class in the language, we could look to async/await as a test case here. How could we make Python extensible enough to build in that kind of syntax without forking it?
+---
+pub_date: 2019-06-25

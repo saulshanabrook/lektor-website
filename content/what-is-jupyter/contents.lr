@@ -1,0 +1,36 @@
+title: What is Jupyter?
+---
+body:
+
+Meta goals:
+
+Make strong statements and then iterate when we disagree.
+
+Sharing/collaboration words need to be defined.
+
+To define those, we need to talk about permissions.
+
+To talk about permissions, we need to talk about resources.
+
+What is the meta system here of the Jupyter server? If we try to push things into being server extensions. Can kernels be a server extension?
+
+We should write a glossary of these things. 
+
+A blog is an incubation space. Where as documentation is hard and fast, we should use the blog to explore them. 
+
+Let it live on a blog to start, then get it to a central place once it's standardized.
+
+Zach's press releases:
+
+* Jupyter Server
+* Projects / permissions
+* Hub sharing. You publish notebooks somewhere and other people fetch them.
+
+[`memo`](https://github.com/atom/xray/tree/master/memo_core). This seems great! 
+
+Can I create a diagram of where we would need to go to cover different things and possible dependencies?
+
+---
+pub_date: 2019-04-12
+---
+_discoverable: no
