@@ -1,0 +1,20 @@
+title: "Composing Partial Evaluations"
+---
+body:
+
+Paolo Perrone was nice enough to live stream their category theory seminar [on YouTube](https://www.youtube.com/watch?v=6wv1egynhuY&feature=youtu.be). It's really cool to be able to watch this sort of thing online to get a sense of what people are up to.
+
+TBH I was expecting something a little more applied, because when I think of partial eval, I am thinking of the world of using it as a tool for programmers, not as a formal mathematical system to be studied. So most of it went over my head, but I did pick up some interesting intuitions, not sure if they are right.
+
+
+The first was just in the beginning, the explanation of monads, as ways to box objects, and then have some operations on how to deal with these boxed things without being able to see inside of them.
+
+![](./screen-shot-2020-03-19-at-3.26.05-pm.png)
+
+The second was a lot more fuzzy, but basically that this work is about exploring how knowing more things about the objects you are dealing with can help you understand identity. 
+
+![](./screen-shot-2020-03-19-at-3.30.16-pm.png)
+
+If you want to know "Are these two things equals?" Then you can build up larger rules of equivalence based on the rules underlying rules. I am trying to situate this work with respect to term rewriting systems and SMT solvers. Basically, as an end user, if you want to deal with objects like "natural numbers", "sets", or "arrays" you likely want some of the replacements that happen with them to be not uni directional. I mean that for some structures, there might not be a simplest form ....
+---
+pub_date: 2020-03-19
