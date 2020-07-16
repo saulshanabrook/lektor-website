@@ -2,7 +2,7 @@
 name = Saul Shanabrook
 
 [servers.ghpages]
-target = ghpages://saulshanabrook/saulshanabrook.github.io?cname=www.saulshanabrook.com
+target = ghpages://saulshanabrook/saulshanabrook.github.io
 
 [packages]
 lektor-markdown-highlighter = 0.3.1
