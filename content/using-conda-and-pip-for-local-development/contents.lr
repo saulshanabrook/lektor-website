@@ -1,0 +1,99 @@
+title: Using Conda and Pip for Local Development
+---
+body:
+
+I recently started working with a few new people on a Python package and they asked "Where is my trusty old `setup.py` file?! And why are some dependencies in this `pyproject.toml` thing and others in `environment.yml`?"
+
+So I went looking for a good guide to explain these things and came up a bit short. I also realized that maybe my setup is a maybe a bit bespoke! In the hope of explaining these things as well as getting feedback on how others do it, I set out to write a little blog post on how I set up my Python projects.
+
+The basic TLDR is:
+
+* Use [Flit](https://flit.readthedocs.io/en/latest/) + [`pyproject.toml`](https://www.python.org/dev/peps/pep-0518/) for distributing to the world on PyPi. 
+* Use [Conda (Forge)](https://conda-forge.org/) + [`environment.yml`](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-file-manually) for creating your own local development environment (because it offers better isolation than virtualenvs, but is faster than docker, and also better resolution than Pip).
+
+## Why Flit? What's `pyproject.toml`?
+
+Flit is a tool to develop Python packages, that is similar to Poetry or setuptools (I am sure most of that is not technically correct because I am not an expert on Python packaging). I like flit because it's an opinionated library that forces you to adhere to some "best practices" like keeping all your files in a folder with the name of the library.
+
+When you are using flit, instead of doing `pip install -e .` you would do `flit install --symlink. `. And instead of putting all the dependency information in `setup.py` you put it in the declarative `pyproject.toml`. Here is an example
+
+```toml
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "metadsl"
+author = "Saul Shanabrook"
+author-email = "s.shanabrook@gmail.com"
+home-page = "https://github.com/Quansight-Labs/metadsl"
+# These are required on install. of the package
+requires = [
+    "typing_extensions",
+    "typing_inspect",
+    "python-igraph>=0.8.0"
+]
+requires-python = ">=3.8"
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+[tool.flit.metadata.requires-extra]
+# These are only installed when developing the package, not when an end user installs it
+test = [
+    "pytest>=3.6.0",
+    "pytest-cov",
+    "pytest-mypy",
+    "pytest-randomly",
+    "pytest-xdist",
+    "pytest-pudb",
+    "mypy"
+]
+doc = [
+    "sphinx",
+    "sphinx-autodoc-typehints",
+    "sphinx_rtd_theme",
+    'recommonmark',
+    "nbsphinx",
+    "ipykernel",
+    "IPython",
+    "sphinx-autobuild"
+]
+dev = [
+    "jupyterlab>=1.0.0",
+    "nbconvert",
+    "pudb",
+    "beni"
+]
+```
+
+## What about Conda and the `environment.yml`?
+
+I use Conda to make separate worlds for each Python project I work on so that they don't conflict with each other.
+
+Before I started working at Quansight, I had stayed away from Conda. It seemed too closely linked to this Anaconda company, and wasn't an official Python "standard" as far as I could tell. Also, no one really used it much in the web development Python community. Previously, I used virtualenvs, and then Docker images, to keep my environments separate.
+
+Conda, in a way, is like an in between. Not as isolated as Docker, but more isolated than virtualenv, because each conda environment has its own Python installation. It's also easier to debug locally than docker and faster to start. It's easier to make your editor like VS Code also pick up your conda environment, then a docker image.
+
+A main difference between conda environments and virtualenvs is that conda packages up non-python packages as well. Why would this be useful? Because much of the scientific/ML python packages actually depend on C/fortran/non python dependencies. And installing these with pip gives you a bit of a worse experience. For more info about conda, see:
+
+* ["Conda: Myths and Misconceptions" Jake VP](https://jakevdp.github.io/blog/2016/08/25/conda-myths-and-misconceptions/)
+* ["Why conda install instead of pip install?" Siddhesh Gunjal](https://medium.com/analytics-vidhya/why-conda-install-instead-of-pip-install-ba4c6826a0ae)
+* ["Lesson 2. Use Conda Environments to Manage Python Dependencies: Everything That You Need to Know" Earth Data Analytics Online Certificate](https://www.earthdatascience.org/courses/intro-to-earth-data-science/python-code-fundamentals/use-python-packages/introduction-to-python-conda-environments/)
+
+So I create a separate conda environment for every project, and store the developer dependencies in `environment.yml`. I also use [a Fish script](https://saulshanabrook.github.io/fish-auto-activate-conda/) to auto-activate the environment based on the folder name.
+
+## Keeping `pyproject.toml` and `environment.yml` in sync
+
+Unfortunately, using both of these tools requires duplicating the installation metadata in two files. Ideally, both `flit` and `conda` could somehow read from the `pyprojet.toml` file and developers could choose which tool to use to work on the project. Until that comes to be, I created a tool called [`beni`](https://github.com/Quansight-Labs/beni) which generates an `environment.yml` based on a `pyproject.toml`, to keep them in sync.
+
+## This is very confusing!
+
+Yes, I know! There are many different communities, tools, and standards all interacting here and the experience isn't exactly streamlined. It happens to be what I am comfortable with at the moment, and what works for me, but I would be happy to learn more about what other people do.
+
+---
+pub_date: 2021-04-21
